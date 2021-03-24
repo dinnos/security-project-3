@@ -8,8 +8,6 @@ string encrypt(const string& plainText, const string& key);
 string dencrypt(const string& encrypted, string key);
 int getNumberRepresentation(string key);
 
-char* A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\?¿'+´*¨{}][;:,.^";
-
 int main() {
     string key, message, result;
     int option;
@@ -24,19 +22,16 @@ int main() {
         cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n";
         cin >> option;
 
-        switch(option){
-            case 1: result = encrypt(message, key);
-                    cout << "Result: " << result << endl;
-                    break;
-
-            case 2: result = dencrypt(message, key);
-                    break;
+        if (option === 1) {
+            result = encrypt(message, key);
+            cout << "\n Result: " << result << endl;
+        } else if (option == 2) {
+            result = dencrypt(message, key);
+            cout << "\n Result: " << result << endl;
         }
-
     } while (option != 3);
 
-
-
+    return 0;
 }
 
 string encrypt(const string& plainText, const string& key) {
