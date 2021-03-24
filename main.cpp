@@ -1,12 +1,14 @@
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <utility>
+#include "iostream"
 
 using namespace std;
 
-string encrypt(const string& plainText, const string& key);
-string dencrypt(const string& encrypted, string key);
+string encrypt(string message, string key);
+string decrypt(string message, string key);
 int getNumberRepresentation(string key);
+
+char* ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+char* abc = "abcdefghijklmopqrstuvwxyz";
 
 int main() {
     string key, message, result;
@@ -15,22 +17,19 @@ int main() {
     cout << "Give me the key: ";
     getline(cin, key);
 
+    cout << "Give me the message: ";
+    getline(cin, message);
+
     option = -1;
     while (option != 3) {
-        cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n 3) Exit";
+        cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n 3) Exit\n";
         cin >> option;
 
         if (option == 1) {
-            cout << "Give me the message: ";
-            getline(cin, message);
-
             result = encrypt(message, key);
             cout << "\n Result: " << result << endl;
         } else if (option == 2) {
-            cout << "Give me the encrypted message: ";
-            getline(cin, message);
-
-            result = dencrypt(message, key);
+            result = decrypt(message, key);
             cout << "\n Result: " << result << endl;
         }
     }
@@ -38,41 +37,50 @@ int main() {
     return 0;
 }
 
-string encrypt(const string& plainText, const string& key) {
-    int numKey = getNumberRepresentation(key), numPlainText = getNumberRepresentation(plainText);
-    stringstream result;
+string encrypt(string message, string key) {
+    int numberKey = getNumberRepresentation(key), size = message.length();
+    char *point;
+    char result[size];
 
-    for (int i = 0; i < numKey; i++) {
-        numPlainText += i;
-        numPlainText = numPlainText << 2; //circular -> confución
-        numPlainText ^= numKey; //XOR -> difusión
+    for (int i = 0; i < size; i++) {
+        if (isspace(message[i])) {
+            result[i] = message[i];
+            continue;
+        }
+
+        if ((point = strchr(ABC, message[i]))) {
+            result[i] = ABC[(point - ABC + numberKey) % 26];
+        }
+
+        if((point = strchr(abc, message[i]))){
+            result[i] = abc[(point - abc + numberKey) % 26];
+        }
     }
 
-    result << hex << numPlainText; //representación hexa de numPlainText
-
-    return result.str();
+    return result;
 }
 
-string dencrypt(const string& encrypted, string key) {
-    char *aux;
-    long number = strtoul(encrypted.c_str(), &aux, 16);
-    int input;
+string decrypt(string message, string key) {
+    int numberKey = getNumberRepresentation(key), size = message.length();
+    char *point;
+    char result[size];
 
-    if (*aux != 0) {
-        cout << "encrypted is not a number" << endl;
-        exit(-1);
+    for (int i = 0; i < size; i++) {
+        if (isspace(message[i])) {
+            result[i] = message[i];
+            continue;
+        }
+
+        if ((point = strchr(ABC, message[i]))) {
+            result[i] = ABC[(point - ABC - numberKey + 26) % 26];
+        }
+
+        if ((point = strchr(abc, message[i]))) {
+            result[i] = abc[(point - abc - numberKey + 26) % 26];
+        }
     }
 
-    input = (int) number;
-    int numKey = getNumberRepresentation(key);
-
-    for (int i = numKey; i > 0; i--) {
-        number += i;
-        number = number << 2;//circular -> confución
-        number ^= numKey;//XOR ->difusión
-    }
-
-    return "";
+    return result;
 }
 
 int getNumberRepresentation(string key) {
@@ -85,4 +93,6 @@ int getNumberRepresentation(string key) {
 
     return result;
 }
+
+
 
