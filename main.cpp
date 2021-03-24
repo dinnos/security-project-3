@@ -15,8 +15,9 @@ int main() {
     cout << "Give me the key: ";
     getline(cin, key);
 
-    do {
-        cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n";
+    option = -1;
+    while (option != 3) {
+        cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n 3) Exit";
         cin >> option;
 
         if (option == 1) {
@@ -32,7 +33,7 @@ int main() {
             result = dencrypt(message, key);
             cout << "\n Result: " << result << endl;
         }
-    } while (option != 3);
+    }
 
     return 0;
 }
