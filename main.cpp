@@ -22,7 +22,7 @@ int main() {
         cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n";
         cin >> option;
 
-        if (option === 1) {
+        if (option == 1) {
             result = encrypt(message, key);
             cout << "\n Result: " << result << endl;
         } else if (option == 2) {
