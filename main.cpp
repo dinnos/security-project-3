@@ -12,9 +12,6 @@ int main() {
     string key, message, result;
     int option;
 
-    cout << "Give me the message: ";
-    getline(cin, message);
-
     cout << "Give me the key: ";
     getline(cin, key);
 
@@ -23,9 +20,15 @@ int main() {
         cin >> option;
 
         if (option == 1) {
+            cout << "Give me the message: ";
+            getline(cin, message);
+
             result = encrypt(message, key);
             cout << "\n Result: " << result << endl;
         } else if (option == 2) {
+            cout << "Give me the encrypted message: ";
+            getline(cin, message);
+
             result = dencrypt(message, key);
             cout << "\n Result: " << result << endl;
         }
