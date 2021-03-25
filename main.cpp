@@ -3,96 +3,83 @@
 
 using namespace std;
 
-string encrypt(string message, string key);
-string decrypt(string message, string key);
-int getNumberRepresentation(string key);
-
-char* ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-char* abc = "abcdefghijklmopqrstuvwxyz";
+string encrypt(string plainText, const string& key);
+string decrypt(string encrypted, const string& key);
+string xorOperation(string text, string key);
+string addition(string text, const string& key);
+string subtraction(string text, const string& key);
 
 int main() {
-    string key, message, result;
-    int option;
+    string encrypted = encrypt("kylewbanks.com", "hasjhaksa");
+    cout << "Encrypted: " << encrypted << "\n";
 
-    cout << "Give me the key: ";
-    getline(cin, key);
-
-    cout << "Give me the message: ";
-    getline(cin, message);
-
-    option = -1;
-    while (option != 3) {
-        cout << "What do you want to do? \n 1) Encrypt\n 2) Decrypt\n 3) Exit\n";
-        cin >> option;
-
-        if (option == 1) {
-            result = encrypt(message, key);
-            cout << "\n Result: " << result << endl;
-        } else if (option == 2) {
-            result = decrypt(message, key);
-            cout << "\n Result: " << result << endl;
-        }
-    }
+    string decrypted = decrypt(encrypted, "hasjhaksa");
+    cout << "Decrypted: " << decrypted << "\n";
 
     return 0;
 }
 
-string encrypt(string message, string key) {
-    int numberKey = getNumberRepresentation(key), size = message.length();
-    char *point;
-    char result[size];
+string encrypt(string plainText, const string& key) {
+    string output = move(plainText);
 
-    for (int i = 0; i < size; i++) {
-        if (isspace(message[i])) {
-            result[i] = message[i];
-            continue;
-        }
+    for (int i = 0; i < 16; ++i) {
+        output = addition(output, key);
+        output = xorOperation(output, key);
+        output = addition(output, key);
+        output = xorOperation(output, key);
+    }
 
-        if ((point = strchr(ABC, message[i]))) {
-            result[i] = ABC[(point - ABC + numberKey) % 26];
-        }
+    return output;
+}
 
-        if((point = strchr(abc, message[i]))){
-            result[i] = abc[(point - abc + numberKey) % 26];
+string decrypt(string encrypted, const string& key) {
+    string output = move(encrypted);
+
+    for (int i = 16; i > 0; --i) {
+        output = xorOperation(output, key);
+        output = subtraction(output, key);
+        output = xorOperation(output, key);
+        output = subtraction(output, key);
+    }
+
+    return output;
+}
+
+string xorOperation(string text, string key) {
+    int textSize = text.size(), keySize = key.size();
+    string output = text;
+
+    int aux = 0;
+    for (int i = 0; i < textSize; i++) {
+        output[i] = text[i] ^ key[aux];
+        aux++;
+        if (aux == keySize) {
+            aux = 0;
         }
     }
 
-    return result;
+    return output;
 }
 
-string decrypt(string message, string key) {
-    int numberKey = getNumberRepresentation(key), size = message.length();
-    char *point;
-    char result[size];
+string addition(string text, const string& key) {
+    int textSize = text.size(), keySize = key.size();
+    string output = text;
 
-    for (int i = 0; i < size; i++) {
-        if (isspace(message[i])) {
-            result[i] = message[i];
-            continue;
-        }
-
-        if ((point = strchr(ABC, message[i]))) {
-            result[i] = ABC[(point - ABC - numberKey + 26) % 26];
-        }
-
-        if ((point = strchr(abc, message[i]))) {
-            result[i] = abc[(point - abc - numberKey + 26) % 26];
-        }
+    for (int i = 0; i < textSize; i++) {
+        output[i] = text[i] + keySize;
     }
 
-    return result;
+    return output;
 }
 
-int getNumberRepresentation(string key) {
-    int size = key.length();
-    int result = 0;
+string subtraction(string text, const string& key) {
+    int textSize = text.size(), keySize = key.size();
+    string output = text;
 
-    for (int i = 0; i < size; i++) {
-        result += int(key[i]);
+    for (int i = 0; i < textSize; i++) {
+        output[i] = text[i] - keySize;
     }
 
-    return result;
+    return output;
 }
-
-
 
