@@ -8,21 +8,25 @@ string decrypt(string encrypted, const string& key);
 string xorOperation(string text, string key);
 string addition(string text, const string& key);
 string subtraction(string text, const string& key);
+int getNumberRepresentation(string key);
 
 int main() {
-    string encrypted = encrypt("kylewbanks.com", "hasjhaksa");
-    cout << "Encrypted: " << encrypted << "\n";
+    string key = "hasjhaksa";
+    string message = "kylewbanks.com";
 
-    string decrypted = decrypt(encrypted, "hasjhaksa");
-    cout << "Decrypted: " << decrypted << "\n";
+    string encrypted = encrypt(message, key);
+    string decrypted = decrypt(encrypted, key);
+
+    cout << "Encrypted: " << encrypted << "\nDecrypted: " << decrypted << endl;
 
     return 0;
 }
 
 string encrypt(string plainText, const string& key) {
     string output = move(plainText);
+    int rounds = getNumberRepresentation(key);
 
-    for (int i = 0; i < 16; ++i) {
+    for (int i = 0; i < rounds; ++i) {
         output = addition(output, key);
         output = xorOperation(output, key);
         output = addition(output, key);
@@ -34,8 +38,9 @@ string encrypt(string plainText, const string& key) {
 
 string decrypt(string encrypted, const string& key) {
     string output = move(encrypted);
+    int rounds = getNumberRepresentation(key);
 
-    for (int i = 16; i > 0; --i) {
+    for (int i = rounds; i > 0; --i) {
         output = xorOperation(output, key);
         output = subtraction(output, key);
         output = xorOperation(output, key);
@@ -83,3 +88,13 @@ string subtraction(string text, const string& key) {
     return output;
 }
 
+int getNumberRepresentation(string key) {
+    int size = key.size();
+    int result = 0;
+
+    for (int i = 0; i < size; i++) {
+        result += int(key[i]);
+    }
+
+    return result;
+}
